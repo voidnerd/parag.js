@@ -3,7 +3,7 @@ interface LooseObject {
 }
 
 class Template {
-  private tokenRegex = `({{|}}|\@if|@elseif|@else|\@endif)`;
+  private tokenRegex = `({{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
   private TOKEN_TYPE: Symbol | string | null = null;
   private RENDER: Symbol = Symbol();
   private IF: string = '@if';
@@ -11,6 +11,7 @@ class Template {
   private ELSE: string = '@else';
   private ENDIF: string = '@endif';
   private FOR: string = '@for';
+  private ENDFOR: string = '@endfor';
   private source = '';
   public constructor(private template: string) {}
 
@@ -32,6 +33,7 @@ class Template {
       switch (token) {
         case this.IF:
         case this.ELSEIF:
+        case this.FOR:
           const nextToken = temp.substring(0, this.nextTokenEndIndex(temp));
           tokens.push(nextToken);
           temp = temp.slice(nextToken.length);
@@ -70,7 +72,6 @@ class Template {
    * Parse template tokens to javascript
    */
   public parseToken(token: string, currentIndex: number, totalTokens: number) {
-    console.log(token);
     switch (token) {
       case '{{':
         this.TOKEN_TYPE = this.RENDER;
@@ -85,13 +86,16 @@ class Template {
         this.TOKEN_TYPE = this.ELSEIF;
         break;
       case this.ELSE:
-        this.TOKEN_TYPE = this.ELSE;
+        this.source += `} else { `;
+        this.TOKEN_TYPE = null;
         break;
       case this.ENDIF:
-        if (currentIndex === totalTokens - 1) {
-          this.source += `}`;
-        }
-        this.TOKEN_TYPE = this.ENDIF;
+      case this.ENDFOR:
+        this.source += `}`;
+        this.TOKEN_TYPE = null;
+        break;
+      case this.FOR:
+        this.TOKEN_TYPE = this.FOR;
         break;
       default:
         if (this.TOKEN_TYPE) {
@@ -107,14 +111,10 @@ class Template {
               this.source += `} else if ${token} {`;
               this.TOKEN_TYPE = null;
               break;
-            case this.ELSE:
-              this.source += `} else { `;
+            case this.FOR:
+              this.source += `for ${token} {`;
               this.TOKEN_TYPE = null;
-              break;
-            case this.ENDIF:
-              this.source += `}`;
-              this.TOKEN_TYPE = null;
-              break;
+              break
           }
         } else {
           this.source += '_append(`' + token + '`);';
@@ -122,7 +122,6 @@ class Template {
         break;
     }
 
-    console.log('print', this.source);
   }
 
   public compile(data: LooseObject) {
@@ -131,8 +130,6 @@ class Template {
     let prepend = ' ';
     let append = '';
     const tokens = this.tokenize();
-
-    console.log(tokens);
 
     const totalTokens = tokens.length;
 
@@ -146,7 +143,6 @@ class Template {
 
       append += `return _output;`;
       code = prepend + this.source + append;
-      console.log(code);
       return Function(`{${Object.keys(data).join(',')}}`, code);
     }
   }

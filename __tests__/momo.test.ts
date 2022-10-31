@@ -4,7 +4,7 @@ test('should render template', () => {
   expect(render('<p>Hello {{name}}</p>', { name: 'Ndie' })).toBe('<p>Hello Ndie</p>');
 });
 
-describe('Test if statements', () => {
+describe('Test conditional statements', () => {
   test('test truthy if statement', () => {
     expect(
       render(
@@ -20,7 +20,7 @@ describe('Test if statements', () => {
     ).toMatch('<p>20 is old enough</p>');
   });
 
-  test('test truthy if statement', () => {
+  test('test else if statement', () => {
     expect(
       render(
         `@if(user.age > 19)
@@ -51,6 +51,19 @@ describe('Test if statements', () => {
           },
         },
       ),
-    ).not.toMatch('<p>Not old enough</p>');
+    ).toMatch('<p>Not old enough</p>');
+  });
+});
+
+describe('Test loop', () => {
+  test('test for of loop', () => {
+    expect(
+      render(
+        `<div>@for(let fruit of fruits)<span>{{fruit}}</span>@endfor</div>`,
+        {
+          fruits: ['mango', 'orange'],
+        },
+      ),
+    ).toMatch('<div><span>mango</span><span>orange</span></div>');
   });
 });
