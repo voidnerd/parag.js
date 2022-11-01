@@ -1,6 +1,6 @@
 # Parag
 
-Parage is nodejs templating engine inpired by the beautiful syntax of laravel blade.
+Parag is a nodejs templating engine inpired by the beautiful syntax of laravel blade.
 
 
 ## Interpolation
