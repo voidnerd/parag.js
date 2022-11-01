@@ -1,7 +1,7 @@
-import { render } from '../src/momo';
+import { render, renderFile } from '../src/parag';
 
 test('should render template', () => {
-  expect(render('<p>Hello {{name}}</p>', { name: 'Ndie' })).toBe('<p>Hello Ndie</p>');
+  expect(renderFile(process.cwd() + "/examples/hello.html", { name: 'Ndie' })).toBe('<p>Hello Ndie</p>');
 });
 
 describe('Test conditional statements', () => {

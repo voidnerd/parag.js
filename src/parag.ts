@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 interface LooseObject {
   [key: string]: any;
 }
@@ -5,13 +7,13 @@ interface LooseObject {
 class Template {
   private tokenRegex = `({{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
   private TOKEN_TYPE: Symbol | string | null = null;
-  private RENDER: Symbol = Symbol();
-  private IF: string = '@if';
-  private ELSEIF: string = '@elseif';
-  private ELSE: string = '@else';
-  private ENDIF: string = '@endif';
-  private FOR: string = '@for';
-  private ENDFOR: string = '@endfor';
+  private readonly RENDER: Symbol = Symbol();
+  private readonly IF: string = '@if';
+  private readonly ELSEIF: string = '@elseif';
+  private readonly ELSE: string = '@else';
+  private readonly ENDIF: string = '@endif';
+  private readonly FOR: string = '@for';
+  private readonly ENDFOR: string = '@endfor';
   private source = '';
   public constructor(private template: string) {}
 
@@ -71,7 +73,7 @@ class Template {
   /**
    * Parse template tokens to javascript
    */
-  public parseToken(token: string, currentIndex: number, totalTokens: number) {
+  private parseToken(token: string, currentIndex: number, totalTokens: number) {
     switch (token) {
       case '{{':
         this.TOKEN_TYPE = this.RENDER;
@@ -114,14 +116,13 @@ class Template {
             case this.FOR:
               this.source += `for ${token} {`;
               this.TOKEN_TYPE = null;
-              break
+              break;
           }
         } else {
           this.source += '_append(`' + token + '`);';
         }
         break;
     }
-
   }
 
   public compile(data: LooseObject) {
@@ -149,6 +150,13 @@ class Template {
 }
 
 export function render(template: string, data: LooseObject = {}) {
+  const tmpl = new Template(template);
+  const fn = tmpl.compile(data);
+  return fn ? fn(data) : '';
+}
+
+export function renderFile(filePath: string, data: LooseObject = {}) {
+  const template = fs.readFileSync(filePath).toString();
   const tmpl = new Template(template);
   const fn = tmpl.compile(data);
   return fn ? fn(data) : '';
