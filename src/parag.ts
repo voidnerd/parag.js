@@ -1,9 +1,5 @@
 import * as fs from 'fs';
 
-interface LooseObject {
-  [key: string]: any;
-}
-
 class Template {
   private tokenRegex = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
   private TOKEN_TYPE: Symbol | string | null = null;
@@ -16,13 +12,12 @@ class Template {
   private readonly FOR: string = '@for';
   private readonly ENDFOR: string = '@endfor';
 
-
   private source = '';
 
   public constructor(private template: string) {}
 
   /** Escape html tags as entities */
-  private escape(str: string) {
+  private escape(str: string): string {
     let tagsToReplace: Record<string, string> = {
       '&': '&amp;',
       '<': '&lt;',
@@ -76,7 +71,7 @@ class Template {
    * @param template
    * @returns index +1
    */
-  private nextTokenEndIndex(template: string) {
+  private nextTokenEndIndex(template: string): number {
     for (let i = 0; i < template.length; i++) {
       if (template[i] === ')') {
         return i + 1;
@@ -89,7 +84,7 @@ class Template {
   /**
    * Parse template tokens to javascript
    */
-  private parseToken(token: string, currentIndex: number, totalTokens: number) {
+  private parseToken(token: string, currentIndex: number, totalTokens: number): void {
     switch (token) {
       case '{{':
         this.TOKEN_TYPE = this.ESCAPE;
@@ -150,7 +145,7 @@ class Template {
     }
   }
 
-  public compile(data: LooseObject) {
+  public compile(data: Record<any, any>): Function {
     let self = this;
     let code = '';
     let prepend = ' ';
@@ -163,26 +158,23 @@ class Template {
       self.parseToken(token, index, totalTokens);
     });
 
-    if (this.source) {
-      prepend += `let _output = '';
+    prepend += `let _output = '';
         function _append(str){if(str) return _output += str}`;
 
-      append += `return _output;`;
-      code = prepend + this.source + append;
-      return Function(`{${Object.keys(data).join(',')}}`, code).bind(this);
-    }
+    append += `return _output;`;
+    code = prepend + this.source + append;
+    /** Pass data keys as variable names to Function */
+    return Function(`{${Object.keys(data).join(',')}}`, code).bind(this);
   }
 }
 
-export function render(template: string, data: LooseObject = {}) {
+export function render(template: string, data: Record<any, any> = {}): string {
   const tmpl = new Template(template);
-  const fn = tmpl.compile(data);
-  return fn ? fn(data) : '';
+  return tmpl.compile(data)(data);
 }
 
-export function renderFile(filePath: string, data: LooseObject = {}) {
+export function renderFile(filePath: string, data: Record<any, any> = {}): string {
   const template = fs.readFileSync(filePath).toString();
   const tmpl = new Template(template);
-  const fn = tmpl.compile(data);
-  return fn ? fn(data) : '';
+  return tmpl.compile(data)(data);
 }
