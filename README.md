@@ -25,7 +25,7 @@ or
 - Unescaped
 
 ```html
-<div>{!! article.body !!}</div>
+<div>{{! article.body !}}</div>
 ```
 
 ## Conditionals
@@ -76,8 +76,8 @@ To keep things simple, parag only supports javascript `for` loop statments
 - for loop statement
 ```html
 <ul>
-  @for(let var i = 0; i < 5; i++)
-    <li> {{ count + i }}</li>
+  @for(let i = 0; i < 5; i++)
+    <li> {{ "count: "  + i }}</li>
   @endfor
 </ul>
 ```

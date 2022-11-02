@@ -5,17 +5,33 @@ interface LooseObject {
 }
 
 class Template {
-  private tokenRegex = `({{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
+  private tokenRegex = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
   private TOKEN_TYPE: Symbol | string | null = null;
-  private readonly RENDER: Symbol = Symbol();
+  private readonly ESCAPE: Symbol = Symbol();
+  private readonly RAW: Symbol = Symbol();
   private readonly IF: string = '@if';
   private readonly ELSEIF: string = '@elseif';
   private readonly ELSE: string = '@else';
   private readonly ENDIF: string = '@endif';
   private readonly FOR: string = '@for';
   private readonly ENDFOR: string = '@endfor';
+
+
   private source = '';
+
   public constructor(private template: string) {}
+
+  /** Escape html tags as entities */
+  private escape(str: string) {
+    let tagsToReplace: Record<string, string> = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+    };
+    return String(str).replace(/[&<>]/g, function (tag) {
+      return tagsToReplace[tag] || tag;
+    });
+  }
 
   /** Prepare template for parsing */
   private tokenize(): Array<string> {
@@ -76,9 +92,15 @@ class Template {
   private parseToken(token: string, currentIndex: number, totalTokens: number) {
     switch (token) {
       case '{{':
-        this.TOKEN_TYPE = this.RENDER;
+        this.TOKEN_TYPE = this.ESCAPE;
         break;
       case '}}':
+        this.TOKEN_TYPE = null;
+        break;
+      case '{{!':
+        this.TOKEN_TYPE = this.RAW;
+        break;
+      case '!}}':
         this.TOKEN_TYPE = null;
         break;
       case this.IF:
@@ -102,7 +124,10 @@ class Template {
       default:
         if (this.TOKEN_TYPE) {
           switch (this.TOKEN_TYPE) {
-            case this.RENDER:
+            case this.ESCAPE:
+              this.source += ` _append(this.escape(${token}));`;
+              break;
+            case this.RAW:
               this.source += ` _append(${token});`;
               break;
             case this.IF:
@@ -144,7 +169,7 @@ class Template {
 
       append += `return _output;`;
       code = prepend + this.source + append;
-      return Function(`{${Object.keys(data).join(',')}}`, code);
+      return Function(`{${Object.keys(data).join(',')}}`, code).bind(this);
     }
   }
 }
