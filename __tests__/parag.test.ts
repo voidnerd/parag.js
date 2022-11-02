@@ -16,6 +16,14 @@ describe('Test interpolation', () => {
       '<p>Hello <span>Void</span></p>',
     );
   });
+
+  test('test for unclosed tags', () => {
+    try {
+      render(`{{ {{}}`, {});
+    } catch (error: any) {
+      expect(error.message).toMatch('Matching tag for ');
+    }
+  });
 });
 
 describe('Test conditional statements', () => {

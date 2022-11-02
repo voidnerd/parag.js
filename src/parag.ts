@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 class Template {
-  private tokenRegex = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
+  private readonly TOKEN_REGEX = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
   private TOKEN_TYPE: Symbol | string | null = null;
   private readonly ESCAPE: Symbol = Symbol();
   private readonly RAW: Symbol = Symbol();
@@ -32,7 +32,7 @@ class Template {
   private tokenize(): Array<string> {
     let temp: string = this.template;
     const tokens = [];
-    const regex = new RegExp(this.tokenRegex);
+    const regex = new RegExp(this.TOKEN_REGEX);
     let result = regex.exec(temp);
     while (result) {
       let searchIndex = result.index;
@@ -84,7 +84,7 @@ class Template {
   /**
    * Parse template tokens to javascript
    */
-  private parseToken(token: string, currentIndex: number, totalTokens: number): void {
+  private parseToken(token: string): void {
     switch (token) {
       case '{{':
         this.TOKEN_TYPE = this.ESCAPE;
@@ -152,11 +152,28 @@ class Template {
     let append = '';
     const tokens = this.tokenize();
 
-    const totalTokens = tokens.length;
+    const closes: Record<string, string> = {
+      '{{': '}}',
+      '{{!': '!}}',
+      '@if': '@endif',
+      '@for': '@endfor',
+    };
+    const stack: Array<string> = [];
 
-    tokens.forEach((token, index, array) => {
-      self.parseToken(token, index, totalTokens);
+    tokens.forEach((token) => {
+      if (Object.keys(closes).includes(token)) {
+        stack.push(token);
+      } else if (Object.values(closes).includes(token) && closes[String(stack[stack.length - 1])] === token) {
+        stack.pop();
+      } else if (Object.values(closes).includes(token) && closes[String(stack[stack.length - 1])] !== token) {
+        throw new Error(`Opening tag for ${token} not found`);
+      }
+      self.parseToken(token);
     });
+
+    if (stack.length > 0) {
+      throw new Error(`Matching tag for ${stack[0]} not found`);
+    }
 
     prepend += `let _output = '';
         function _append(str){if(str) return _output += str}`;
