@@ -126,7 +126,7 @@ To keep things simple, parag only supports javascript `for` loop statements
 </ul>
 ```
 
-- For...of loop statement
+- For...in loop statement
 
 ```html
 <ul>
