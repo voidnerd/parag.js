@@ -57,8 +57,15 @@ app.listen(port, () => {
 });
 ```
 
+#### Make vscode treat parag file extensions as html
 
-# Features 
+1. Go to Code > Preferences > Settings
+2. Search "File associations"
+3. Click on "Add Item"
+4. Add (`*.parag`) as extension(item) and `html` as associated language(value).
+
+# Features
+
 ### Interpolation
 
 All results are escaped by default.
