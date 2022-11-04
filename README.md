@@ -38,7 +38,7 @@ const result: string = Parag.render('<p>{{title}} was released in {{year}}</p>',
 console.log(result); // => <p>The matrix was released in 1999</p>
 ```
 
-## Usage with express
+#### Usage with express
 
 ```js
 const express = require('express');
@@ -57,7 +57,9 @@ app.listen(port, () => {
 });
 ```
 
-## Interpolation
+
+# Features 
+### Interpolation
 
 All results are escaped by default.
 
@@ -80,7 +82,7 @@ You can also render unescaped results
 <div>{{! article.body !}}</div>
 ```
 
-## Conditionals
+### Conditionals
 
 Simple if statement
 
@@ -102,7 +104,7 @@ if, else if and else chain.
 @endif
 ```
 
-# Loops and Iteration
+### Loops and Iteration
 
 To keep things simple, parag only supports javascript `for` loop statements
 
