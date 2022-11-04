@@ -21,7 +21,7 @@
   },
   "bugs": "https://github.com/voidnerd/parag/issues",
   "homepage": "https://github.com/voidnerd/parag",
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "lib/**/*"
   ],

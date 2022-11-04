@@ -196,7 +196,7 @@ export function renderFile(filePath: string, data: Record<any, any> = {}): strin
   return tmpl.compile(data)(data);
 }
 
-export function _express(
+export function __express(
   filePath: string,
   options: Record<any, any> = {},
   callback: (err: unknown, data?: string) => void,
