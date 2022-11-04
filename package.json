@@ -1,6 +1,6 @@
 {
   "name": "parag",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Parag is a nodejs templating engine inpired by the beautiful syntax of laravel blade.",
   "main": "./lib/parag.js",
   "types": "./lib/parag.d.ts",
