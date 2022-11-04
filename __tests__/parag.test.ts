@@ -2,17 +2,17 @@ import { render, renderFile } from '../src/parag';
 
 describe('Test interpolation', () => {
   test('should render template', () => {
-    expect(renderFile(process.cwd() + '/examples/hello.html', { name: 'Void' })).toBe('<p>Hello Void</p>');
+    expect(renderFile(process.cwd() + '/examples/hello.parag', { name: 'Void' })).toBe('<p>Hello Void</p>');
   });
 
   test('should escape values', () => {
-    expect(renderFile(process.cwd() + '/examples/hello.html', { name: '<span>Void</span>' })).toBe(
+    expect(renderFile(process.cwd() + '/examples/hello.parag', { name: '<span>Void</span>' })).toBe(
       '<p>Hello &lt;span&gt;Void&lt;/span&gt;</p>',
     );
   });
 
   test('should not escape values', () => {
-    expect(renderFile(process.cwd() + '/examples/hello_raw.html', { name: '<span>Void</span>' })).toBe(
+    expect(renderFile(process.cwd() + '/examples/hello_raw.parag', { name: '<span>Void</span>' })).toBe(
       '<p>Hello <span>Void</span></p>',
     );
   });

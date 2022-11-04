@@ -195,3 +195,14 @@ export function renderFile(filePath: string, data: Record<any, any> = {}): strin
   const tmpl = new Template(template);
   return tmpl.compile(data)(data);
 }
+
+export function _express(filePath: string, options: Record<any, any> = {}, callback: Function) {
+  try {
+    const template = fs.readFileSync(filePath).toString();
+    const tmpl = new Template(template);
+    const rendered = tmpl.compile(options)(options);
+    return callback(null, rendered);
+  } catch (error) {
+    return callback(error);
+  }
+}

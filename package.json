@@ -1,13 +1,18 @@
 {
-  "name": "momo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "parag",
+  "version": "0.1.0",
+  "description": "Parag is a nodejs templating engine inpired by the beautiful syntax of laravel blade.",
+  "main": "./lib/parag.js",
+  "types": "./lib/parag.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "author": "",
   "license": "ISC",
