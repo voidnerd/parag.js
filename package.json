@@ -1,6 +1,6 @@
 {
   "name": "parag",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parag is a nodejs templating engine inpired by the beautiful syntax of laravel blade.",
   "main": "./lib/parag.js",
   "types": "./lib/parag.d.ts",
@@ -14,7 +14,13 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
-  "author": "",
+  "author": "Ndifreke Friday <voidnerdx@gmail.com> (voidnerd.com)",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:voidnerd/parag.git"
+  },
+  "bugs": "https://github.com/voidnerd/parag/issues",
+  "homepage": "https://github.com/voidnerd/parag",
   "license": "ISC",
   "files": [
     "lib/**/*"

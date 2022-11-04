@@ -2,9 +2,9 @@ import * as fs from 'fs';
 
 class Template {
   private readonly TOKEN_REGEX = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
-  private TOKEN_TYPE: Symbol | string | null = null;
-  private readonly ESCAPE: Symbol = Symbol();
-  private readonly RAW: Symbol = Symbol();
+  private TOKEN_TYPE: symbol | string | null = null;
+  private readonly ESCAPE: symbol = Symbol();
+  private readonly RAW: symbol = Symbol();
   private readonly IF: string = '@if';
   private readonly ELSEIF: string = '@elseif';
   private readonly ELSE: string = '@else';
@@ -18,25 +18,25 @@ class Template {
 
   /** Escape html tags as entities */
   private escape(str: string): string {
-    let tagsToReplace: Record<string, string> = {
+    const tagsToReplace: Record<string, string> = {
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
     };
-    return String(str).replace(/[&<>]/g, function (tag) {
+    return String(str).replace(/[&<>]/g, (tag) => {
       return tagsToReplace[tag] || tag;
     });
   }
 
   /** Prepare template for parsing */
-  private tokenize(): Array<string> {
+  private tokenize(): string[] {
     let temp: string = this.template;
     const tokens = [];
     const regex = new RegExp(this.TOKEN_REGEX);
     let result = regex.exec(temp);
     while (result) {
-      let searchIndex = result.index;
-      let token = result[0];
+      const searchIndex = result.index;
+      const token = result[0];
       if (searchIndex !== 0) {
         tokens.push(temp.substring(0, searchIndex));
         temp = temp.slice(searchIndex);
@@ -57,7 +57,7 @@ class Template {
       result = regex.exec(temp);
     }
 
-    /**If there's nothing to tokenize, then it's one giant array element */
+    // If there's nothing to tokenize, then it's one giant array element 
     if (temp) {
       tokens.push(temp);
     }
@@ -145,8 +145,8 @@ class Template {
     }
   }
 
-  public compile(data: Record<any, any>): Function {
-    let self = this;
+  public compile(data: Record<any, any>): (data: Record<any, any>) => string {
+    const self = this;
     let code = '';
     let prepend = ' ';
     let append = '';
@@ -158,7 +158,7 @@ class Template {
       '@if': '@endif',
       '@for': '@endfor',
     };
-    const stack: Array<string> = [];
+    const stack: string[] = [];
 
     tokens.forEach((token) => {
       if (Object.keys(closes).includes(token)) {
@@ -196,13 +196,13 @@ export function renderFile(filePath: string, data: Record<any, any> = {}): strin
   return tmpl.compile(data)(data);
 }
 
-export function _express(filePath: string, options: Record<any, any> = {}, callback: Function) {
+export function _express(filePath: string, options: Record<any, any> = {}, callback: (err: unknown, data?: string) => void) {
   try {
     const template = fs.readFileSync(filePath).toString();
     const tmpl = new Template(template);
     const rendered = tmpl.compile(options)(options);
     return callback(null, rendered);
-  } catch (error) {
+  } catch (error: unknown) {
     return callback(error);
   }
 }

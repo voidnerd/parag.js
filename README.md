@@ -1,10 +1,65 @@
 # Parag
 
-Parag is a nodejs templating engine inpired by the beautiful syntax of laravel blade.
+Parag is a nodejs templating engine inspired by the beautiful syntax of laravel blade.
+
+## Installation
+
+```
+npm install parag
+```
+
+## Usage
+
+Below is an example of how to use parag
+
+```js
+const Parag = require('parag');
+
+const data = {
+  title: 'The matrix',
+  year: '1999',
+};
+
+const result = Parag.render('<p>{{title}} was released in {{year}}</p>', data);
+console.log(result); // => <p>The matrix was released in 1999</p>
+```
+
+Same code with typescript
+
+```ts
+import * as Parag from 'parag';
+
+const data: Record<string, string> = {
+  title: 'The matrix',
+  year: '1999',
+};
+
+const result: string = Parag.render('<p>{{title}} was released in {{year}}</p>', data);
+console.log(result); // => <p>The matrix was released in 1999</p>
+```
+
+## Usage with express
+
+```js
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.set('views', './view');
+app.set('view engine', 'parag');
+
+app.get('/', (req, res) => {
+  res.render('hello', { name: 'void' });
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
+```
 
 ## Interpolation
 
-- Escaped
+All results are escaped by default.
 
 ```html
 <p>Hello {{name}}</p>
@@ -13,16 +68,13 @@ Parag is a nodejs templating engine inpired by the beautiful syntax of laravel b
 If it's javascript, parag will interpolate the result.
 
 ```html
-<p>{{["rice", "beans"].join(",")}}</p>
+<div>
+  <p>{{["rice", "beans"].join(",")}}</p>
+  <p>{{new Date()}}</p>
+</div>
 ```
 
-or
-
-```html
-<p>{{new Date()}}</p>
-```
-
-- Unescaped
+You can also render unescaped results
 
 ```html
 <div>{{! article.body !}}</div>
@@ -34,26 +86,27 @@ Simple if statement
 
 ```html
 @if(user)
-  <p>{{user.name}}<p>
-@endif
+<p>{{user.name}}</p>
+<p>@endif</p>
 ```
 
 if, else if and else chain.
 
 ```html
 @if(user.age > 21)
-  <p>Proper adult</p>
+<p>Proper adult</p>
 @elseif(user.age > 18 && user.age < 21)
-  <p>Early adult</p>
+<p>Early adult</p>
 @else
-  <p>Kid</p>
+<p>Kid</p>
 @endif
 ```
 
 # Loops and Iteration
 
-To keep things simple, parag only supports javascript `for` loop statments
+To keep things simple, parag only supports javascript `for` loop statements
 
+-
 - For..of loop statement
 
 ```html
@@ -65,24 +118,24 @@ To keep things simple, parag only supports javascript `for` loop statments
 ```
 
 - For...of loop statement
+
 ```html
 <ul>
   @for(let prop in user)
-    <li> {{user[prop]}}</li>
+  <li>{{user[prop]}}</li>
   @endfor
 </ul>
 ```
 
 - for loop statement
+
 ```html
 <ul>
   @for(let i = 0; i < 5; i++)
-    <li> {{ "count: "  + i }}</li>
+  <li>{{ "count: " + i }}</li>
   @endfor
 </ul>
 ```
-
-
 
 ## License
 
