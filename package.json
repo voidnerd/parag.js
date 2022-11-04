@@ -1,12 +1,12 @@
 {
   "name": "parag",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Parag is a nodejs templating engine inpired by the beautiful syntax of laravel blade.",
   "main": "./lib/parag.js",
   "types": "./lib/parag.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "build": "tsc",
     "prepare": "npm run build",

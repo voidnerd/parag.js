@@ -57,7 +57,7 @@ class Template {
       result = regex.exec(temp);
     }
 
-    // If there's nothing to tokenize, then it's one giant array element 
+    // If there's nothing to tokenize, then it's one giant array element
     if (temp) {
       tokens.push(temp);
     }
@@ -196,7 +196,11 @@ export function renderFile(filePath: string, data: Record<any, any> = {}): strin
   return tmpl.compile(data)(data);
 }
 
-export function _express(filePath: string, options: Record<any, any> = {}, callback: (err: unknown, data?: string) => void) {
+export function _express(
+  filePath: string,
+  options: Record<any, any> = {},
+  callback: (err: unknown, data?: string) => void,
+) {
   try {
     const template = fs.readFileSync(filePath).toString();
     const tmpl = new Template(template);
