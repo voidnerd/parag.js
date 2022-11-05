@@ -1,6 +1,6 @@
 # Parag
 
-Parag is a nodejs templating engine inspired by the beautiful syntax of laravel blade.
+Parag is a fast and lightweight template engine for nodejs with zero dependencies.
 
 ## Installation
 
@@ -96,7 +96,7 @@ Simple if statement
 ```html
 @if(user)
 <p>{{user.name}}</p>
-<p>@endif</p>
+@endif
 ```
 
 if, else if and else chain.
@@ -115,7 +115,6 @@ if, else if and else chain.
 
 To keep things simple, parag only supports javascript `for` loop statements
 
--
 - For..of loop statement
 
 ```html
