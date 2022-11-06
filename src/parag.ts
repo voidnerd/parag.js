@@ -1,8 +1,9 @@
 import * as fs from 'fs';
-import * as path from 'path';
-interface Options {
-  filePath?: string;
-}
+import Func from './func';
+
+import { Options } from './types';
+import { Cache } from './utils';
+
 class Template {
   private readonly TOKEN_REGEX = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor|@include)`;
   private TOKEN_TYPE: symbol | string | null = null;
@@ -19,18 +20,6 @@ class Template {
   private source = '';
 
   public constructor(private template: string, private options: Options = {}) {}
-
-  /** Escape html tags as entities */
-  private escape(str: string): string {
-    const tagsToReplace: Record<string, string> = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-    };
-    return String(str).replace(/[&<>]/g, (tag) => {
-      return tagsToReplace[tag] || tag;
-    });
-  }
 
   /** Prepare template for parsing */
   private tokenize(): string[] {
@@ -160,7 +149,7 @@ class Template {
     }
   }
 
-  public compile(data: Record<any, any>): (data: Record<any, any>) => string {
+  public compile(): Func {
     const self = this;
     let code = '';
     let prepend = ' ';
@@ -195,35 +184,29 @@ class Template {
 
     append += `return _output;`;
     code = prepend + this.source + append;
-    
-    /** Pass data keys as variable names to Function */
-    return Function(`{${Object.keys(data).join(',')}}`, code).bind(this);
-  }
 
-  public include(filePath: string) {
-
-    if (!this.options.filePath) {
-      throw new Error('Main template path not provided');
-    }
-    const templateDirName = path.dirname(this.options.filePath);
-
-    const partIncludePath = path.resolve(templateDirName, filePath);
-
-    const fullIncludePath = `${partIncludePath}.parag`;
-    
-    return renderFile(fullIncludePath);
+    const func = new Func(code, this.options);
+    return func;
   }
 }
 
 export function render(template: string, data: Record<any, any> = {}): string {
   const tmpl = new Template(template);
-  return tmpl.compile(data)(data);
+  const fn = tmpl.compile();
+  fn.setData(data);
+  return fn.compile().exec();
 }
 
 export function renderFile(filePath: string, data: Record<any, any> = {}): string {
-  const template = fs.readFileSync(filePath).toString();
-  const tmpl = new Template(template, { filePath });
-  return tmpl.compile(data)(data);
+  let fn: any = Cache.get(filePath);
+  if (!fn) {
+    const template = fs.readFileSync(filePath).toString();
+    const tmpl = new Template(template, { filePath });
+    fn = tmpl.compile();
+  }
+  fn.setData(data);
+  const result = fn.compile().exec();
+  return result;
 }
 
 export function __express(
@@ -232,9 +215,7 @@ export function __express(
   callback: (err: unknown, data?: string) => void,
 ) {
   try {
-    const template = fs.readFileSync(filePath).toString();
-    const tmpl = new Template(template, { filePath });
-    const rendered = tmpl.compile(options)(options);
+    const rendered = renderFile(filePath, options);
     return callback(null, rendered);
   } catch (error: unknown) {
     return callback(error);

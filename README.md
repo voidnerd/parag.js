@@ -103,11 +103,11 @@ if, else if and else chain.
 
 ```html
 @if(user.age > 21)
-<p>Proper adult</p>
+  <p>Proper adult</p>
 @elseif(user.age > 18 && user.age < 21)
-<p>Early adult</p>
+  <p>Early adult</p>
 @else
-<p>Kid</p>
+  <p>Kid</p>
 @endif
 ```
 
