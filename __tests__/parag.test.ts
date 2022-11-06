@@ -1,4 +1,5 @@
 import { render, renderFile } from '../src/parag';
+import * as path from 'path';
 
 describe('Test interpolation', () => {
   test('should render template', () => {
@@ -84,5 +85,13 @@ describe('Test loop', () => {
         fruits: ['mango', 'orange'],
       }),
     ).toMatch('<div><span>mango</span><span>orange</span></div>');
+  });
+});
+
+describe('Test inlude', () => {
+  test('test partials import', () => {
+    expect(renderFile(path.join(__dirname, '../examples/include.parag'))).toMatch(
+      '<p>I am the header</p>',
+    );
   });
 });

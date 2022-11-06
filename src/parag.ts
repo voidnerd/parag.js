@@ -1,7 +1,10 @@
 import * as fs from 'fs';
-
+import * as path from 'path';
+interface Options {
+  filePath?: string;
+}
 class Template {
-  private readonly TOKEN_REGEX = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor)`;
+  private readonly TOKEN_REGEX = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor|@include)`;
   private TOKEN_TYPE: symbol | string | null = null;
   private readonly ESCAPE: symbol = Symbol();
   private readonly RAW: symbol = Symbol();
@@ -11,10 +14,11 @@ class Template {
   private readonly ENDIF: string = '@endif';
   private readonly FOR: string = '@for';
   private readonly ENDFOR: string = '@endfor';
+  private readonly INCLUDE: string = '@include';
 
   private source = '';
 
-  public constructor(private template: string) {}
+  public constructor(private template: string, private options: Options = {}) {}
 
   /** Escape html tags as entities */
   private escape(str: string): string {
@@ -51,6 +55,10 @@ class Template {
           tokens.push(nextToken);
           temp = temp.slice(nextToken.length);
           break;
+        case this.INCLUDE:
+          const nextIncludeToken = temp.substring(0 + 2, this.nextTokenEndIndex(temp) - 2);
+          tokens.push(nextIncludeToken);
+          temp = temp.slice(nextIncludeToken.length + 4);
         default:
           break;
       }
@@ -116,6 +124,9 @@ class Template {
       case this.FOR:
         this.TOKEN_TYPE = this.FOR;
         break;
+      case this.INCLUDE:
+        this.TOKEN_TYPE = this.INCLUDE;
+        break;
       default:
         if (this.TOKEN_TYPE) {
           switch (this.TOKEN_TYPE) {
@@ -135,6 +146,10 @@ class Template {
               break;
             case this.FOR:
               this.source += `for ${token} {`;
+              this.TOKEN_TYPE = null;
+              break;
+            case this.INCLUDE:
+              this.source += ` _append(this.include('${token}'));`;
               this.TOKEN_TYPE = null;
               break;
           }
@@ -180,8 +195,23 @@ class Template {
 
     append += `return _output;`;
     code = prepend + this.source + append;
+    
     /** Pass data keys as variable names to Function */
     return Function(`{${Object.keys(data).join(',')}}`, code).bind(this);
+  }
+
+  public include(filePath: string) {
+
+    if (!this.options.filePath) {
+      throw new Error('Main template path not provided');
+    }
+    const templateDirName = path.dirname(this.options.filePath);
+
+    const partIncludePath = path.resolve(templateDirName, filePath);
+
+    const fullIncludePath = `${partIncludePath}.parag`;
+    
+    return renderFile(fullIncludePath);
   }
 }
 
@@ -192,7 +222,7 @@ export function render(template: string, data: Record<any, any> = {}): string {
 
 export function renderFile(filePath: string, data: Record<any, any> = {}): string {
   const template = fs.readFileSync(filePath).toString();
-  const tmpl = new Template(template);
+  const tmpl = new Template(template, { filePath });
   return tmpl.compile(data)(data);
 }
 
@@ -203,7 +233,7 @@ export function __express(
 ) {
   try {
     const template = fs.readFileSync(filePath).toString();
-    const tmpl = new Template(template);
+    const tmpl = new Template(template, { filePath });
     const rendered = tmpl.compile(options)(options);
     return callback(null, rendered);
   } catch (error: unknown) {
