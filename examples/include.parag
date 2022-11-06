@@ -1,1 +1,3 @@
-@include("partials/header")
+@include("partials/header", {title: "Homepage"})
+
+<p>{{title}} Ndie </p>

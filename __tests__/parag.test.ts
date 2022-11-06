@@ -89,9 +89,10 @@ describe('Test loop', () => {
 });
 
 describe('Test inlude', () => {
+  // Also checks that caching works properly, hence the duplicate renderFile
   test('test partials import', () => {
-    expect(renderFile(path.join(__dirname, '../examples/include.parag'))).toMatch(
-      '<p>I am the header</p>',
-    );
+    const filePath = path.join(__dirname, '../examples/include.parag');
+    expect(renderFile(filePath, { title: 'Mr.' })).toMatch('<title>Homepage</title>');
+    expect(renderFile(filePath, { title: 'Chef' })).toMatch('<p>Chef Ndie </p>');
   });
 });

@@ -1,10 +1,9 @@
 # Parag
 
-Parag is a fast and lightweight template engine for nodejs with zero dependencies.
-
+Parag is a fast and lightweight template engine for nodejs with zero dependencies. It offers you tags that make interpolating javascript into your `HTML` look clean and readable, even with nested conditionals and loops.
 ## Installation
 
-```
+```bash
 npm install parag
 ```
 
@@ -112,8 +111,6 @@ if, else if and else chain.
 ```
 
 ### Loops and Iteration
-
-To keep things simple, parag only supports javascript `for` loop statements
 
 - For..of loop statement
 

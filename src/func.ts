@@ -1,7 +1,10 @@
 import * as path from 'path';
 import { renderFile } from './parag';
 import { Cache } from './utils';
-import { Options } from './types';
+
+export interface Options {
+  filePath?: string;
+}
 
 /**
  * Func class returned by Template.compile().
@@ -28,7 +31,7 @@ export default class Func {
     this.data = data;
   }
 
-  private include(filePath: string): string {
+  private include(filePath: string, data: Record<any, any> = {}): string {
     if (!this.options.filePath) {
       throw new Error('Main template path not provided');
     }
@@ -38,7 +41,9 @@ export default class Func {
 
     const fullIncludePath = `${partIncludePath}.parag`;
 
-    return renderFile(fullIncludePath, this.data);
+    const mergedData = { ...this.data, ...data };
+
+    return renderFile(fullIncludePath, mergedData);
   }
 
   public compile(): Func {

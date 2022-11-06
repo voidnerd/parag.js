@@ -1,7 +1,5 @@
 import * as fs from 'fs';
-import Func from './func';
-
-import { Options } from './types';
+import Func, { Options } from './func';
 import { Cache } from './utils';
 
 class Template {
@@ -40,14 +38,15 @@ class Template {
         case this.IF:
         case this.ELSEIF:
         case this.FOR:
+        case this.INCLUDE:
           const nextToken = temp.substring(0, this.nextTokenEndIndex(temp));
           tokens.push(nextToken);
           temp = temp.slice(nextToken.length);
           break;
-        case this.INCLUDE:
-          const nextIncludeToken = temp.substring(0 + 2, this.nextTokenEndIndex(temp) - 2);
-          tokens.push(nextIncludeToken);
-          temp = temp.slice(nextIncludeToken.length + 4);
+        // case this.INCLUDE:
+        //   const nextIncludeToken = temp.substring(0 + 2, this.nextTokenEndIndex(temp) - 2);
+        //   tokens.push(nextIncludeToken);
+        //   temp = temp.slice(nextIncludeToken.length + 4);
         default:
           break;
       }
@@ -138,7 +137,7 @@ class Template {
               this.TOKEN_TYPE = null;
               break;
             case this.INCLUDE:
-              this.source += ` _append(this.include('${token}'));`;
+              this.source += ` _append(this.include${token});`;
               this.TOKEN_TYPE = null;
               break;
           }
@@ -184,7 +183,6 @@ class Template {
 
     append += `return _output;`;
     code = prepend + this.source + append;
-
     const func = new Func(code, this.options);
     return func;
   }
