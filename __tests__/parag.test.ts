@@ -93,6 +93,6 @@ describe('Test inlude', () => {
   test('test partials import', () => {
     const filePath = path.join(__dirname, '../examples/include.parag');
     expect(renderFile(filePath, { title: 'Mr.' })).toMatch('<title>Homepage</title>');
-    expect(renderFile(filePath, { title: 'Chef' })).toMatch('<p>Chef Ndie </p>');
+    expect(renderFile(filePath, { title: 'Chef' })).toMatch('<p> Chef Ndie </p>');
   });
 });
