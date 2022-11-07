@@ -145,7 +145,7 @@ if, else if and else chain.
 
 ### Partials
 
-You can render partials in your template with the @include tag.
+You can render partials in your template with the `@include` tag.
 
 ```js
 @include("partials/header")
