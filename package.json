@@ -27,10 +27,10 @@
   "author": "Ndifreke Friday <voidnerdx@gmail.com> (voidnerd.com)",
   "repository": {
     "type": "git",
-    "url": "git@github.com:voidnerd/parag.git"
+    "url": "git@github.com:voidnerd/parag.js.git"
   },
-  "bugs": "https://github.com/voidnerd/parag/issues",
-  "homepage": "https://github.com/voidnerd/parag",
+  "bugs": "https://github.com/voidnerd/parag.js/issues",
+  "homepage": "https://github.com/voidnerd/parag.js",
   "license": "MIT",
   "files": [
     "lib/**/*"
