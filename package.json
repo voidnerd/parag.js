@@ -14,6 +14,15 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
+  "keywords": [
+    "parag",
+    "template",
+    "engine",
+    "language",
+    "templates",
+    "mustache",
+    "ejs"
+  ],
   "author": "Ndifreke Friday <voidnerdx@gmail.com> (voidnerd.com)",
   "repository": {
     "type": "git",
