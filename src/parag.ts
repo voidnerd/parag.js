@@ -43,10 +43,6 @@ class Template {
           tokens.push(nextToken);
           temp = temp.slice(nextToken.length);
           break;
-        // case this.INCLUDE:
-        //   const nextIncludeToken = temp.substring(0 + 2, this.nextTokenEndIndex(temp) - 2);
-        //   tokens.push(nextIncludeToken);
-        //   temp = temp.slice(nextIncludeToken.length + 4);
         default:
           break;
       }
