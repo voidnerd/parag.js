@@ -1,7 +1,7 @@
 {
   "name": "parag",
   "version": "0.1.9",
-  "description": "Parag is a fast and lightweight template engine for nodejs with zero dependencies",
+  "description": "Parag.js is a fast and lightweight template engine for nodejs with zero dependencies.",
   "main": "./lib/parag.js",
   "types": "./lib/parag.d.ts",
   "scripts": {
@@ -15,11 +15,12 @@
     "postversion": "git push && git push --tags"
   },
   "keywords": [
-    "parag",
     "template",
     "engine",
     "language",
     "templates",
+    "paragjs",
+    "parag",
     "mustache",
     "ejs"
   ],

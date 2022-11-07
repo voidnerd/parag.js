@@ -1,6 +1,6 @@
-# Parag
+# Parag.js
 
-Parag is a fast and lightweight template engine for nodejs with zero dependencies. It offers you tags that make interpolating javascript into your `HTML` look clean and readable, even with nested conditionals and loops.
+Parag.js is a fast and lightweight template engine for nodejs with zero dependencies. It offers you tags that make interpolating javascript into your `HTML` look clean and readable, even with nested conditionals and loops.
 
 ## Installation
 
