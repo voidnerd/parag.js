@@ -1,6 +1,7 @@
 # Parag
 
 Parag is a fast and lightweight template engine for nodejs with zero dependencies. It offers you tags that make interpolating javascript into your `HTML` look clean and readable, even with nested conditionals and loops.
+
 ## Installation
 
 ```bash
@@ -140,6 +141,20 @@ if, else if and else chain.
   <li>{{ "count: " + i }}</li>
   @endfor
 </ul>
+```
+
+### Partials
+
+You can render partials in your template with the @include tag.
+
+```js
+@include("partials/header")
+```
+
+A partial inherits all data properties of its parent template. You can also pass extra data to partials with an object.
+
+```js
+@include("partials/footer", {year: "2022"})
 ```
 
 ## License
