@@ -38,6 +38,19 @@ const result: string = Parag.render('<p>{{title}} was released in {{year}}</p>',
 console.log(result); // => <p>The matrix was released in 1999</p>
 ```
 
+We recommend that you use the `renderFile` function as it is cached on first render.
+
+```js
+const Parag = require('parag');
+
+const user = {
+  name: 'Void',
+};
+
+const result = Parag.renderFile('./example/hello.parag', user);
+console.log(result); // => <p>Hello Void</p>
+```
+
 #### Usage with express
 
 ```js
@@ -156,6 +169,15 @@ A partial inherits all data properties of its parent template. You can also pass
 ```js
 @include("partials/footer", {year: "2022"})
 ```
+
+### Parag with Frontend Libraries
+For libraries that conflict with this template engine, you can use the `@` symbol to render content as is.
+
+```js
+const result = Parag.render('<p>Count: @{{ count }}</p>');
+console.log(result); // <p> Count: {{ count }} </p>
+```
+
 
 ## License
 

@@ -3,7 +3,7 @@ import Func, { Options } from './func';
 import { Cache } from './utils';
 
 class Template {
-  private readonly TOKEN_REGEX = `({{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor|@include)`;
+  private readonly TOKEN_REGEX = `(@{{|{{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor|@include)`;
   private TOKEN_TYPE: symbol | string | null = null;
   private readonly ESCAPE: symbol = Symbol();
   private readonly RAW: symbol = Symbol();
@@ -14,6 +14,7 @@ class Template {
   private readonly FOR: string = '@for';
   private readonly ENDFOR: string = '@endfor';
   private readonly INCLUDE: string = '@include';
+  private readonly IGNORE_TAG: string = '@{{';
 
   private source = '';
 
@@ -78,6 +79,9 @@ class Template {
    */
   private parseToken(token: string): void {
     switch (token) {
+      case this.IGNORE_TAG:
+        this.TOKEN_TYPE = this.IGNORE_TAG;
+        break;
       case '{{':
         this.TOKEN_TYPE = this.ESCAPE;
         break;
@@ -114,6 +118,9 @@ class Template {
       default:
         if (this.TOKEN_TYPE) {
           switch (this.TOKEN_TYPE) {
+            case this.IGNORE_TAG:
+              this.source += this.source += '_append(`' + '{{' + token + '}}' + '`);';
+              break;
             case this.ESCAPE:
               this.source += ` _append(this.escape(${token}));`;
               break;
@@ -153,6 +160,7 @@ class Template {
 
     const closes: Record<string, string> = {
       '{{': '}}',
+      '@{{': '}}',
       '{{!': '!}}',
       '@if': '@endif',
       '@for': '@endfor',

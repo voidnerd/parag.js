@@ -18,6 +18,14 @@ describe('Test interpolation', () => {
     );
   });
 
+  test('should ignore frontend tags @{{', () => {
+    try {
+      render(`count @{{ count }}`, {});
+    } catch (error: any) {
+      expect(error.message).toMatch('count {{ count }}');
+    }
+  });
+
   test('test for unclosed tags', () => {
     try {
       render(`{{ {{}}`, {});
