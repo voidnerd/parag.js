@@ -3,9 +3,10 @@ import Func, { Options } from './func';
 import { Cache } from './utils';
 
 class Template {
-  private readonly TOKEN_REGEX = `(@{{|{{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor|@include)`;
+  private readonly TOKEN_REGEX = `({#|#}|@{{|{{!|!}}|{{|}}|\@if|@elseif|@else|\@endif|@for|@endfor|@include)`;
   private TOKEN_TYPE: symbol | string | null = null;
   private readonly ESCAPE: symbol = Symbol();
+  private readonly COMMENT: symbol = Symbol();
   private readonly RAW: symbol = Symbol();
   private readonly IF: string = '@if';
   private readonly ELSEIF: string = '@elseif';
@@ -94,6 +95,12 @@ class Template {
       case '!}}':
         this.TOKEN_TYPE = null;
         break;
+      case '{#':
+        this.TOKEN_TYPE = this.COMMENT;
+        break;
+      case '#}':
+        this.TOKEN_TYPE = null;
+        break;
       case this.IF:
         this.TOKEN_TYPE = this.IF;
         break;
@@ -126,6 +133,9 @@ class Template {
               break;
             case this.RAW:
               this.source += ` _append(${token});`;
+              break;
+            case this.COMMENT:
+              // Do nothing
               break;
             case this.IF:
               this.source += `if ${token} {`;

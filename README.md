@@ -156,6 +156,12 @@ if, else if and else chain.
 </ul>
 ```
 
+### Comments
+Comments are not include in rendered result
+```
+{# This is a comment #}
+```
+
 ### Partials
 
 You can render partials in your template with the `@include` tag.

@@ -33,7 +33,15 @@ describe('Test interpolation', () => {
       expect(error.message).toMatch('Matching tag for ');
     }
   });
+
+
 });
+
+describe("Test comments", () => {
+  test('test that comments are ignores', () => {
+    expect(render(`{# This is a comment #}`)).toBe("")
+  })
+})
 
 describe('Test conditional statements', () => {
   test('test truthy if statement', () => {
