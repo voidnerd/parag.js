@@ -1,6 +1,6 @@
 {
   "name": "parag",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Parag.js is a fast and lightweight template engine for nodejs with zero dependencies.",
   "main": "./lib/parag.js",
   "types": "./lib/parag.d.ts",
