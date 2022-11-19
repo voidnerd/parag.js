@@ -157,7 +157,7 @@ if, else if and else chain.
 ```
 
 ### Comments
-Comments are not include in rendered result
+Comments are not included in rendered result
 ```
 {# This is a comment #}
 ```
